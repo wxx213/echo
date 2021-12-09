@@ -21,7 +21,7 @@ func main() {
 	reader.Release()
 
 	// writing
-	var write_data []byte
+	var write_data = []byte("hello")
 	// make the write data
 	alloc, _ := writer.Malloc(len(write_data))
 	copy(alloc, write_data) // write data
