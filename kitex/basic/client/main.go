@@ -10,6 +10,7 @@ import (
 	"github.wxx.example/kitex/basic/kitex_gen/api"
 	"github.wxx.example/kitex/basic/kitex_gen/api/echo"
 	"log"
+	"sync"
 	"time"
 )
 
@@ -60,7 +61,33 @@ func testCircuitBreaker() {
 	}
 }
 
+func testLimit() {
+	c, err := echo.NewClient("example", client.WithHostPorts("0.0.0.0:8888"))
+	if err != nil {
+		log.Fatal(err)
+	}
+	req := &api.Request{Message: "my request"}
+
+	num := 150
+	var n sync.WaitGroup
+	n.Add(num)
+	for i:=0; i<num; i++ {
+		go func() {
+			for {
+				_, err := c.Echo(context.Background(), req, callopt.WithRPCTimeout(3*time.Second))
+				if err != nil {
+					log.Println(err)
+					continue
+				}
+				// log.Println(resp)
+				time.Sleep(1 * time.Second)
+			}
+		}()
+	}
+	n.Wait()
+}
 func main() {
 	// testBasic()
-	testCircuitBreaker()
+	// testCircuitBreaker()
+	testLimit()
 }
