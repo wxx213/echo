@@ -4,9 +4,11 @@ import (
 	"fmt"
 	"github.com/cloudwego/kitex/pkg/limit"
 	"github.com/cloudwego/kitex/server"
+	kregistry "github.com/cloudwego/kitex/pkg/registry"
 	zkregistry "github.com/kitex-contrib/registry-zookeeper/registry"
 	api "github.wxx.example/kitex/basic/kitex_gen/api/echo"
 	"log"
+	"net"
 	"time"
 )
 
@@ -40,7 +42,17 @@ func testRegistryZookeeper() {
 		fmt.Println("create zookeeper registry error: ", err)
 		return
 	}
-	svr := api.NewServer(new(EchoImpl), server.WithRegistry(registry))
+	info := &kregistry.Info{
+		ServiceName: "Echo",
+		Weight: 10,
+	}
+	addr, err := net.ResolveTCPAddr("tcp", "127.0.0.1:8888")
+	if err != nil {
+		fmt.Println("create tcp address error: ", err)
+		return
+	}
+	svr := api.NewServer(new(EchoImpl), server.WithRegistry(registry), server.WithRegistryInfo(info),
+				server.WithServiceAddr(addr))
 
 	err = svr.Run()
 

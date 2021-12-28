@@ -94,7 +94,7 @@ func testRegistryZookeper() {
 		fmt.Println("create zookeeper resolver error: ", err)
 		return
 	}
-	c, err := echo.NewClient("example", client.WithResolver(resolver))
+	c, err := echo.NewClient("Echo", client.WithResolver(resolver))
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -109,5 +109,6 @@ func testRegistryZookeper() {
 func main() {
 	// testBasic()
 	// testCircuitBreaker()
-	testLimit()
+	// testLimit()
+	testRegistryZookeper()
 }
