@@ -89,7 +89,7 @@ func testLimit() {
 }
 
 func testRegistryZookeper() {
-	resolver, err := zkresolver.NewZookeeperResolver([]string{"127.0.0.1:2181"}, 40*time.Second)
+	resolver, err := zkresolver.NewZookeeperResolver([]string{"192.168.2.101:2181"}, 40*time.Second)
 	if err != nil {
 		fmt.Println("create zookeeper resolver error: ", err)
 		return

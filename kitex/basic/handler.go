@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"fmt"
 	"github.wxx.example/kitex/basic/kitex_gen/api"
 )
 
@@ -11,5 +12,11 @@ type EchoImpl struct{}
 // Echo implements the EchoImpl interface.
 func (s *EchoImpl) Echo(ctx context.Context, req *api.Request) (resp *api.Response, err error) {
 	// TODO: Your code here...
-	return
+	addr, err := getLocalIPAddress()
+	if err != nil {
+		return nil, nil
+	}
+	return &api.Response{
+		Message: fmt.Sprintf("%s:%s", "Echo from", addr),
+	}, nil
 }
