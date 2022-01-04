@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	zkresolver "github.com/kitex-contrib/registry-zookeeper/resolver"
+	kprometheus "github.com/kitex-contrib/monitor-prometheus"
 	"github.com/cloudwego/kitex/client"
 	"github.com/cloudwego/kitex/client/callopt"
 	"github.com/cloudwego/kitex/pkg/circuitbreak"
@@ -106,9 +107,25 @@ func testRegistryZookeper() {
 	log.Println(resp)
 }
 
+func testMonitor() {
+	c, err := echo.NewClient("example",
+			client.WithHostPorts("0.0.0.0:8888"),
+			client.WithTracer(kprometheus.NewClientTracer(":9091", "/kitexclient")))
+	if err != nil {
+		log.Fatal(err)
+	}
+	req := &api.Request{Message: "my request"}
+	resp, err := c.Echo(context.Background(), req, callopt.WithRPCTimeout(3*time.Second))
+	if err != nil {
+		log.Fatal(err)
+	}
+	log.Println(resp)
+}
+
 func main() {
 	// testBasic()
 	// testCircuitBreaker()
 	// testLimit()
-	testRegistryZookeper()
+	//testRegistryZookeper()
+	testMonitor()
 }

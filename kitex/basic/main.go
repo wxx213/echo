@@ -7,6 +7,7 @@ import (
 	"github.com/cloudwego/kitex/server"
 	kregistry "github.com/cloudwego/kitex/pkg/registry"
 	zkregistry "github.com/kitex-contrib/registry-zookeeper/registry"
+	kprometheus "github.com/kitex-contrib/monitor-prometheus"
 	api "github.wxx.example/kitex/basic/kitex_gen/api/echo"
 	"log"
 	"net"
@@ -87,8 +88,20 @@ func getLocalIPAddress() (string, error){
 	return "", errors.New("No valid ip address")
 }
 
+func testMonitor() {
+	svr := api.NewServer(new(EchoImpl),
+		server.WithTracer(kprometheus.NewServerTracer(":9092", "/kitexserver")))
+
+	err := svr.Run()
+
+	if err != nil {
+		log.Println(err.Error())
+	}
+}
+
 func main() {
 	// testBasic()
 	// testLimit()
-	testRegistryZookeeper()
+	// testRegistryZookeeper()
+	testMonitor()
 }
