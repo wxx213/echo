@@ -8,6 +8,7 @@ import (
 	kregistry "github.com/cloudwego/kitex/pkg/registry"
 	zkregistry "github.com/kitex-contrib/registry-zookeeper/registry"
 	kprometheus "github.com/kitex-contrib/monitor-prometheus"
+	ecodec "github.wxx.example/kitex/basic/codec"
 	api "github.wxx.example/kitex/basic/kitex_gen/api/echo"
 	"log"
 	"net"
@@ -99,9 +100,21 @@ func testMonitor() {
 	}
 }
 
+func testCodec() {
+   codec := ecodec.NewJsonCodec(true)
+   svr := api.NewServer(new(EchoImpl), server.WithCodec(codec))
+
+   err := svr.Run()
+
+   if err != nil {
+       log.Println(err.Error())
+   }
+}
+
 func main() {
 	// testBasic()
 	// testLimit()
 	// testRegistryZookeeper()
-	testMonitor()
+	// testMonitor()
+	testCodec()
 }

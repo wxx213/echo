@@ -11,6 +11,7 @@ import (
 	"github.com/cloudwego/kitex/pkg/rpcinfo"
 	"github.wxx.example/kitex/basic/kitex_gen/api"
 	"github.wxx.example/kitex/basic/kitex_gen/api/echo"
+	ecodec "github.wxx.example/kitex/basic/codec"
 	"log"
 	"sync"
 	"time"
@@ -122,10 +123,26 @@ func testMonitor() {
 	log.Println(resp)
 }
 
+func testCodec() {
+   codec := ecodec.NewJsonCodec(true)
+   c, err := echo.NewClient("example", client.WithHostPorts("0.0.0.0:8888"),
+               client.WithCodec(codec))
+   if err != nil {
+       log.Fatal(err)
+   }
+   req := &api.Request{Message: "my request"}
+   resp, err := c.Echo(context.Background(), req, callopt.WithRPCTimeout(3*time.Second))
+   if err != nil {
+       log.Fatal(err)
+   }
+   log.Println(resp)
+}
+
 func main() {
 	// testBasic()
 	// testCircuitBreaker()
 	// testLimit()
 	//testRegistryZookeper()
-	testMonitor()
+	// testMonitor()
+	testCodec()
 }
